@@ -66,6 +66,7 @@ function sortFiles($files, $archivePath)
     }
 }
 
+
 function archiveOldFiles($files)
 {
     $archivePath = '/home/chudishe/Downloads/ArchiveOldFiles';
@@ -75,13 +76,7 @@ function archiveOldFiles($files)
     }
 
     $sixMonths = 6;
-    $zipFileName = $archivePath . DIRECTORY_SEPARATOR . 'archive.zip';
     $zip = new ZipArchive();
-
-    if ($zip->open($zipFileName, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
-        echo 'Failed to open zip archive';
-        return;
-    }
 
     foreach ($files as $file) {
         $fileChangeDate = strtotime($file['changeDate']);
@@ -94,7 +89,10 @@ function archiveOldFiles($files)
                 rename($file['path'], $newFilePathForArchive);
                 echo 'File ' . $file['name'] . ' archived to ' . $archivePath;
 
+                $zipFileName = $archivePath . DIRECTORY_SEPARATOR . 'archive.zip';
+                $zip->open($zipFileName, ZipArchive::CREATE | ZipArchive::OVERWRITE);
                 $zip->addFile($newFilePathForArchive, $file['name']);
+                $zip->close();
 
                 unlink($newFilePathForArchive);
 
@@ -104,10 +102,7 @@ function archiveOldFiles($files)
             }
         }
     }
-
-    $zip->close();
 }
-
 try {
     $filesInDownloads = getFilesDownloads();
     print_r($filesInDownloads);
