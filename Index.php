@@ -107,7 +107,7 @@ try {
     $filesInDownloads = getFilesDownloads();
     print_r($filesInDownloads);
     archiveOldFiles($filesInDownloads);
-    sortFiles($filesInDownloads, '/home/chudishe/Downloads/ArchiveOldFiles'); // передаем $archivePath
+    sortFiles($filesInDownloads, '/home/chudishe/Downloads/ArchiveOldFiles');
 } catch (Exception $e) {
     echo 'Error: ' . $e->getMessage();
 }
