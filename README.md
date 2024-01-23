@@ -27,4 +27,29 @@ To get File Sorter up and running, ensure you have an Ubuntu/Linux operating sys
    ```bash
    source ~/.bashrc
    ```
-Your File Sorter is now set to gracefully handle the organization of your Downloads folder. Feel free to reach out if you have any questions or need assistance! 🚀
+
+## To Remove
+
+To remove the autoloader:
+
+1. Open 
+```bash 
+nano ~/.bashrc
+```
+2. Delete the line
+```bash
+ php -f "/full/path/to/your/FileSorter.php"
+```
+3. Save and close the file.
+   
+Congratulations, you have removed the autoloader.
+
+4. To remove dependencies, use the following command:
+   ```bash
+   sudo apt autoremove php-zip
+   ```
+5. Confirm and wait for the process to complete.
+
+Once the dependency has been removed, you can safely delete the project folder.
+
+Feel free to reach out if you have any questions or need assistance! 🚀
