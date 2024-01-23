@@ -2,74 +2,75 @@
 /**
  * @throws Exception
  */
-function getFilesDownloads($path = '/home/chudishe/Downloads')
+function getFilesDownloads($path = 'Downloads'): array
 {
-    if (!is_dir($path)) {
+    $downloadsPath = $_SERVER['HOME'] . DIRECTORY_SEPARATOR . $path;
+    if (!is_dir($downloadsPath)) {
         throw new Exception("The passed path $path is not valid");
     }
 
-    function searchFiles($directory)
-    {
-        $files = [];
-
-        $open = opendir($directory);
-        if (!$open) {
-            throw new Exception("Can't open dir: $directory");
-        }
-
-        while (($fileName = readdir($open)) !== false) {
-            if ($fileName !== '.' && $fileName !== '..') {
-                $filePath = $directory . DIRECTORY_SEPARATOR . $fileName;
-                if (is_dir($filePath)) {
-                    // Рекурсивно ищем файлы в поддиректории
-                    $files = array_merge($files, searchFiles($filePath));
-                } else {
-                    $changeDateFormat = date('Y-m-d H:i:s', filemtime($filePath));
-                    $files[] = [
-                        'name' => $fileName,
-                        'path' => $filePath,
-                        'changeDate' => $changeDateFormat,
-                    ];
-                }
-            }
-        }
-        closedir($open);
-
-        return $files;
-    }
-
-    return searchFiles($path);
+    return searchFiles($downloadsPath);
 }
 
-function sortFiles($files, $archivePath)
+/**
+ * @throws Exception
+ */
+function searchFiles($directory): array
+{
+    $files = [];
+
+    $open = opendir($directory);
+    if (!$open) {
+        throw new Exception("Can't open dir: $directory");
+    }
+
+    while (($fileName = readdir($open)) !== false) {
+        if ($fileName !== '.' && $fileName !== '..') {
+            $filePath = $directory . DIRECTORY_SEPARATOR . $fileName;
+
+            if (is_dir($filePath)) {
+                $files = array_merge($files, searchFiles($filePath));
+            } else {
+                $changeDateFormat = date('Y-m-d H:i:s', filemtime($filePath));
+                $files[] = [
+                    'name' => $fileName,
+                    'path' => $filePath,
+                    'changeDate' => $changeDateFormat,
+                ];
+            }
+        }
+    }
+    closedir($open);
+
+    return $files;
+}
+
+function sortFiles($files, $archivePath): void
 {
     foreach ($files as $file) {
+        $downloadsDirectory = $_SERVER['HOME'] . DIRECTORY_SEPARATOR . 'Downloads';
 
         $pathInfo = pathinfo($file['name'], PATHINFO_EXTENSION);
-        $pathToFolder = '/home/chudishe/Downloads/' . $pathInfo;
+        $pathToFolder = $downloadsDirectory . DIRECTORY_SEPARATOR . $pathInfo;
 
         if (!is_dir($pathToFolder)) {
-            mkdir($pathToFolder, 0755);
+            mkdir($pathToFolder, 0755, true);
         }
+
         $newFilePath = $pathToFolder . DIRECTORY_SEPARATOR . $file['name'];
-        //проверка на то есть ли файл уже в архиве
-        if (strpos($file['path'], $archivePath) === false) {
+
+        if (!strpos($file['path'], $archivePath)) {
             if (!file_exists($newFilePath)) {
                 rename($file['path'], $newFilePath);
-                echo 'File ' . $file['name'] . ' moved to ' . $pathToFolder . PHP_EOL;
-            } else {
-                echo 'File ' . $file['name'] . ' already exists in ' . $pathToFolder . PHP_EOL;
             }
-        } else {
-            echo 'File ' . $file['name'] . ' is already in ArchiveOldFiles, skipping.' . PHP_EOL;
         }
     }
 }
 
 
-function archiveOldFiles($files)
+function archiveOldFiles($files): void
 {
-    $archivePath = '/home/chudishe/Downloads/ArchiveOldFiles';
+    $archivePath = $_SERVER['HOME'] . DIRECTORY_SEPARATOR . 'Downloads/ArchiveOldFiles';
 
     if (!is_dir($archivePath)) {
         mkdir($archivePath, 0755);
@@ -87,27 +88,23 @@ function archiveOldFiles($files)
 
             if (!file_exists($newFilePathForArchive)) {
                 rename($file['path'], $newFilePathForArchive);
-                echo 'File ' . $file['name'] . ' archived to ' . $archivePath;
 
                 $zipFileName = $archivePath . DIRECTORY_SEPARATOR . 'archive.zip';
-                $zip->open($zipFileName, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+                $zip->open($zipFileName, ZipArchive::CREATE);
                 $zip->addFile($newFilePathForArchive, $file['name']);
                 $zip->close();
 
                 unlink($newFilePathForArchive);
-
-                echo 'File ' . $file['name'] . ' added to zip archive in ' . $archivePath . PHP_EOL;
-            } else {
-                echo 'File ' . $file['name'] . ' already exists in the archive.' . PHP_EOL;
             }
         }
     }
 }
+
 try {
+    $downloadsPath = $_SERVER['HOME'] . DIRECTORY_SEPARATOR . 'Downloads';
     $filesInDownloads = getFilesDownloads();
-    print_r($filesInDownloads);
     archiveOldFiles($filesInDownloads);
-    sortFiles($filesInDownloads, '/home/chudishe/Downloads/ArchiveOldFiles');
+    sortFiles($filesInDownloads, $downloadsPath . DIRECTORY_SEPARATOR . 'ArchiveOldFiles');
 } catch (Exception $e) {
     echo 'Error: ' . $e->getMessage();
 }
