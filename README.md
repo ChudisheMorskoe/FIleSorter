@@ -27,5 +27,4 @@ To get File Sorter up and running, ensure you have an Ubuntu/Linux operating sys
    ```bash
    source ~/.bashrc
    ```
-
-Voilà! Your File Sorter is now set to gracefully handle the organization of your Downloads folder. Feel free to reach out if you have any questions or need assistance! 🚀
+Your File Sorter is now set to gracefully handle the organization of your Downloads folder. Feel free to reach out if you have any questions or need assistance! 🚀
