@@ -10,7 +10,7 @@ To get File Sorter up and running, ensure you have an Ubuntu/Linux operating sys
 
 1. Open a command prompt.
 2. Navigate to the directory where the project is stored using the `cd` command.
-3. Execute the following command: `./install`.
+3. Execute the following command: `./install.sh`.
    - This command automagically installs all the required dependencies.
 
 4. Now, let's add the script to your computer's autoloader by running the following commands:
