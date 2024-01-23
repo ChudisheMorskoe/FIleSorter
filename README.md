@@ -19,7 +19,7 @@ To use File Sorter, make sure you have an Ubuntu/Linux operating system installe
    ```
    In the opened window, add the following line:
    ```bash
-   /full/path/to/your/FileSorter.php
+  php -f "/full/path/to/your/FileSorter.php"
    ```
    Save and close the file.
 
