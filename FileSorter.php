@@ -45,7 +45,7 @@ function searchFiles($directory): array
     return $files;
 }
 
-function sortFiles($files, $archivePath): void
+function sortFiles(array $files, string $archivePath): void
 {
     foreach ($files as $file) {
         $downloadsDirectory = $_SERVER['HOME'] . DIRECTORY_SEPARATOR . 'Downloads';
@@ -59,9 +59,12 @@ function sortFiles($files, $archivePath): void
 
         $newFilePath = $pathToFolder . DIRECTORY_SEPARATOR . $file['name'];
 
-        if (!strpos($file['path'], $archivePath)) {
-            if (!file_exists($newFilePath)) {
-                rename($file['path'], $newFilePath);
+        if (!strpos($file['path'], $archivePath) && !file_exists($newFilePath)) {
+            $absoluteOldPath = realpath($file['path']);
+            $absoluteNewPath = realpath($newFilePath);
+
+            if ($absoluteOldPath && $absoluteNewPath) {
+                rename($absoluteOldPath, $absoluteNewPath);
             }
         }
     }
