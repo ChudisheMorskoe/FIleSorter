@@ -2,7 +2,7 @@
 
 👋 Hi there! Thanks for exploring the File Sorter project.
 
-File Sorter is a handy utility designed to bring order to your Downloads folder by organizing files based on their formats. Additionally, it intelligently archives files that have remained untouched for more than 6 months. The script seamlessly runs each time your computer boots up.
+File Sorter is a handy utility designed to put your downloads folder in order by intelligently archiving files that have remained unseen for more than 6 months. The script runs smoothly every time your computer boots up.
 
 ## How to Run
 
